@@ -1,4 +1,4 @@
-# DEVOPS TOOLING WEBSITE SOLUTION
+## DEVOPS TOOLING WEBSITE SOLUTION
 In this project, we are tasked to build a single DevOps Tooling Solution to enable our team have access to multiple DEvOps Software like Jenjins, Kubernetes,etc
 We will implement a solution that consists of following components:
      1. Infrastructure: AWS
