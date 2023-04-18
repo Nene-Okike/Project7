@@ -146,6 +146,15 @@ mysql>show databases;
 
 ![databases](databases.png)
 
+5. To enable connection to the database from anywhere, modify the configuration files
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+Change the binding address to 0.0.0.0
+
+Restart mysql after configuration file modification
+sudo systemctl restart mysql
+sudo systemctl status mysql
+Ensure the requisite ports are opened
+
 Step 3 — Prepare the Web Servers
 
 The following needs to be achieved-
@@ -200,6 +209,56 @@ sudo setsebool -P httpd_execmem 1
 
 6. Verify that same files are availble in the NFS server /mnt/apps and webserver /var/www. You can also create a file, touch.txt, in webserver /var/www and confirm it is present in the NFS server /mnt/apps
 
-7. Locate the log folder for Apache on the Web Server and mount it to NFS server’s export for logs
+7. Locate the log folder for Apache on the Web Server and mount it to NFS server’s export for logs with the following commands:-
 
-172.31.94.220:/mnt/logs /var/logs/html nfs defaults 0 0
+172.31.94.220:/mnt/logs /var/log/httpd nfs defaults 0 0
+
+To persist the mount `vi /etc/fstab`
+ paste and save this command
+
+ 172.31.94.220:/mnt/logs /var/log/httpd nfs defaults 0 0
+
+8. Fork the tooling source code from Darey.io Github Account to your Github account. 
+
+Install git in the webserver 
+
+`sudo yum install git -y`
+
+run `git init`
+
+then `git clone https://github.com/darey-io/tooling.git`
+
+9. Deploy the tooling website’s code to the Webserver. Ensure that the html folder from the repository is deployed to /var/www/html with this command
+
+sudo cp -R html/. /var/www/html
+
+10. Ensure port 80 is opened on the webserver from anywhere
+
+11. disable SELinux 
+
+sudo setenforce 0
+Persist the change by open following config file `sudo vi /etc/sysconfig/selinux` and set SELINUX=disabledthen restart httpd.
+
+12. Update the website’s configuration to connect to the database
+
+sudo vi /var/www/html/functions.php  and modify with mysql database user name and password and private IP address of the DB Server
+13. install mysql client
+sudo yum install mysql -y
+
+14. Ensure
+
+14. Apply tooling-db.sql script to your database using this command 
+ mysql -h 172.31.17.42 -u webaccess -p tooling < tooling-db
+
+ 15. Run sudo mv /etc/httpd/conf.d/welcome.conf /etc/httpd/conf.d/welcome.backup
+
+ 16. Open the website in your browser http://172.31.81.222/index.php
+
+ ![loginpage](loginpage.png)
+ 
+ 
+  17. Login with username and password
+
+  ![loggedin](Loggedin.png)
+
+
